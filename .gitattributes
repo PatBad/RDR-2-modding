@@ -1,0 +1,7 @@
+* text=auto
+*.ps1 text eol=crlf
+*.def text eol=crlf
+
+# Generated / vendored: don't show in diffs or language stats
+shared/include/rdr2/natives.h linguist-generated -diff
+data/natives.json linguist-vendored -diff

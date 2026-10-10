@@ -1,0 +1,21 @@
+; CI only: lets GitHub Actions build without the Script Hook RDR2 SDK, which can't be
+; downloaded automatically. `lib /def:` turns this into a stand-in ScriptHookRDR2.lib.
+; Local builds link the real SDK library from sdk/lib/ instead.
+; Keep in sync with shared/include/rdr2/scripthook.h.
+LIBRARY ScriptHookRDR2.dll
+EXPORTS
+    ?keyboardHandlerRegister@@YAXP6AXKGEHHHH@Z@Z
+    ?keyboardHandlerUnregister@@YAXP6AXKGEHHHH@Z@Z
+    ?scriptWait@@YAXK@Z
+    ?scriptRegister@@YAXPEAUHINSTANCE__@@P6AXXZ@Z
+    ?scriptRegisterAdditionalThread@@YAXPEAUHINSTANCE__@@P6AXXZ@Z
+    ?scriptUnregister@@YAXPEAUHINSTANCE__@@@Z
+    ?nativeInit@@YAX_K@Z
+    ?nativePush64@@YAX_K@Z
+    ?nativeCall@@YAPEA_KXZ
+    ?getGlobalPtr@@YAPEA_KH@Z
+    ?worldGetAllVehicles@@YAHPEAHH@Z
+    ?worldGetAllPeds@@YAHPEAHH@Z
+    ?worldGetAllObjects@@YAHPEAHH@Z
+    ?worldGetAllPickups@@YAHPEAHH@Z
+    ?getScriptHandleBaseAddress@@YAPEAEH@Z

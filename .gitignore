@@ -1,0 +1,18 @@
+# Build output
+/build/
+/out/
+/.vs/
+*.user
+
+# Script Hook RDR2 SDK: download it yourself (see README)
+/sdk/
+
+# Stand-in import library generated in CI
+/ci/*.lib
+/ci/*.exp
+
+# Local settings
+/game-dir.txt
+/.claude/settings.local.json
+
+__pycache__/

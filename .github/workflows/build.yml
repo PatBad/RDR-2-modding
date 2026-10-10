@@ -1,0 +1,42 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check natives.h matches data/natives.json
+        run: python tools/gen_natives.py --check
+
+      # The real SDK can't be downloaded here, so link against a stand-in import library.
+      # This proves the code compiles and links; it does not replace testing in the game.
+      - name: Create stand-in ScriptHookRDR2.lib
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          $lib = Get-ChildItem "$vs\VC\Tools\MSVC\*\bin\Hostx64\x64\lib.exe" | Select-Object -First 1
+          & $lib.FullName /nologo /def:ci\ScriptHookRDR2.def /machine:x64 /out:ci\ScriptHookRDR2.lib
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Point the build at the stand-in library
+        run: cmake -S . -B build -A x64 -DSHRDR2_LIB="${{ github.workspace }}/ci/ScriptHookRDR2.lib"
+
+      # Windows PowerShell 5.1, the same shell scripts\build.ps1 runs in on a player's PC.
+      - name: Build
+        shell: powershell
+        run: .\scripts\build.ps1
+
+      - name: Native lookup tool works
+        run: python tools/native.py PLAYER_PED_ID
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mods
+          path: |
+            build/bin/Release/*.asi
+            build/bin/Release/*.ini
