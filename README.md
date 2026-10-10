@@ -8,30 +8,36 @@ Dead Eye cores.
 
 ## One-time setup (on the PC where RDR2 is installed)
 
-1. **Install the tools**
-   - [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/) (2022 or later)
-     with the **Desktop development with C++** workload. That includes the compiler and CMake.
-   - [Git](https://git-scm.com/download/win) and [Python 3](https://www.python.org/downloads/)
-     (Python is only for the native lookup tools).
-   - [Claude Code](https://claude.com/claude-code) for Windows.
+Install [Claude Code](https://claude.com/claude-code) for Windows, open it in a folder such as
+Documents, and ask:
 
-2. **Install Script Hook RDR2 into the game.** Download it from
-   http://www.dev-c.com/rdr2/scripthookrdr2/ and copy `ScriptHookRDR2.dll` and `dinput8.dll`
-   into the game folder (the folder with `RDR2.exe`). You don't need `NativeTrainer.asi`.
+> Install Git with winget, clone https://github.com/PatBad/RDR-2-modding, and run
+> scripts/setup.ps1 from the clone.
 
-3. **Add the SDK to this repo.** From the same page, download the SDK and extract it into the
-   `sdk/` folder here, so that `sdk/lib/ScriptHookRDR2.lib` exists. (It isn't committed to git.)
+Or do it yourself: install [Git](https://git-scm.com/download/win), clone this repo, and run
+this from the repo folder with the game closed:
 
-4. **Tell the scripts where the game is**, if it isn't in the default Steam, Rockstar or Epic
-   location: put the folder path in a file called `game-dir.txt` at the repo root.
+```
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1
+```
 
-5. **Build and install the example mod** (game closed):
-   ```
-   powershell -ExecutionPolicy Bypass -File scripts/build.ps1
-   powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1
-   ```
-   Start Story Mode. A message in the top-left corner says the mod loaded. Press F9 and F10.
-   If nothing appears, run `scripts/logs.ps1` (or ask Claude to).
+`setup.ps1` checks each item and only installs what's missing, so it's safe to run again:
+
+1. Installs Git, Python 3 and Visual Studio Build Tools with the C++ workload, using `winget`.
+   Click **Yes** on the Windows prompts. Build Tools is a download of several GB.
+2. Finds the RDR2 folder. If it's somewhere unusual, add `-GameDir "D:\Games\Red Dead Redemption 2"`.
+3. Installs Script Hook RDR2 (`ScriptHookRDR2.dll`, `dinput8.dll`) into the game folder and
+   its SDK into `sdk/`. It downloads them from http://www.dev-c.com/rdr2/scripthookrdr2/. If
+   that site blocks the download, download both zips from it into your Downloads folder and
+   run the script again.
+4. Builds the example mod and installs it into the game.
+
+It ends with a summary of what's OK and what still needs doing. To check without changing
+anything, add `-CheckOnly`. If Windows says access is denied to the game folder, run PowerShell
+as administrator.
+
+Then start Story Mode. A message in the top-left corner says the mod loaded; press F9 and F10.
+If nothing appears, run `scripts/logs.ps1` (or ask Claude to).
 
 ## Working with Claude Code
 

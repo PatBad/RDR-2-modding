@@ -34,3 +34,42 @@ function Get-GameDir {
 function Get-ModNames {
     Get-ChildItem (Join-Path $RepoRoot 'mods') -Directory | ForEach-Object Name
 }
+
+function Get-VsWherePath {
+    $path = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (Test-Path $path) { return $path }
+    return $null
+}
+
+# Install folder of a Visual Studio (or Build Tools) that has the x64 C++ compiler, or $null.
+function Get-VcToolsPath {
+    $vswhere = Get-VsWherePath
+    if (-not $vswhere) { return $null }
+    $path = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath |
+        Select-Object -First 1
+    if ($path) { return $path }
+    return $null
+}
+
+# CMake from PATH, or the copy that ships with Visual Studio, or $null.
+function Find-CMake {
+    $cmd = Get-Command cmake -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    $vswhere = Get-VsWherePath
+    if ($vswhere) {
+        $path = & $vswhere -latest -products * -find 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe' |
+            Select-Object -First 1
+        if ($path) { return $path }
+    }
+    return $null
+}
+
+# Copy-Item into the game folder, explaining the fix when Windows denies access
+# (game folders under Program Files can need administrator rights).
+function Copy-IntoGameDir([string]$Source, [string]$Destination) {
+    try {
+        Copy-Item $Source $Destination -Force
+    } catch [System.UnauthorizedAccessException] {
+        throw "Windows denied access to $Destination. Open PowerShell with 'Run as administrator' and run the script again."
+    }
+}

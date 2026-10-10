@@ -22,7 +22,7 @@ if (Get-Process -Name RDR2 -ErrorAction SilentlyContinue) {
 }
 
 if (-not (Test-Path (Join-Path $game 'ScriptHookRDR2.dll'))) {
-    Write-Warning "ScriptHookRDR2.dll is missing from $game. Install Script Hook RDR2 from http://www.dev-c.com/rdr2/scripthookrdr2/ or the mods won't load."
+    Write-Warning "ScriptHookRDR2.dll is missing from $game. Run scripts\setup.ps1 to install Script Hook RDR2, or the mods won't load."
 }
 if (-not ((Test-Path (Join-Path $game 'dinput8.dll')) -or (Test-Path (Join-Path $game 'version.dll')))) {
     Write-Warning "No ASI loader (dinput8.dll, which comes with Script Hook RDR2) in $game. The mods won't load without one."
@@ -32,13 +32,13 @@ $asis = Get-ChildItem $bin -Filter *.asi
 if (-not $asis) { throw "No .asi files in $bin." }
 
 foreach ($asi in $asis) {
-    Copy-Item $asi.FullName $game -Force
+    Copy-IntoGameDir $asi.FullName $game
     Write-Host "Installed $($asi.Name)"
 
     $ini = Join-Path $bin "$($asi.BaseName).ini"
     $target = Join-Path $game "$($asi.BaseName).ini"
     if ((Test-Path $ini) -and ($OverwriteIni -or -not (Test-Path $target))) {
-        Copy-Item $ini $target -Force
+        Copy-IntoGameDir $ini $target
         Write-Host "Installed $($asi.BaseName).ini"
     }
 }

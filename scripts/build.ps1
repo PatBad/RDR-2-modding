@@ -8,17 +8,9 @@ param(
 )
 . "$PSScriptRoot\common.ps1"
 
-$cmake = (Get-Command cmake -ErrorAction SilentlyContinue).Source
+$cmake = Find-CMake
 if (-not $cmake) {
-    # Visual Studio ships its own CMake; use it when CMake isn't on PATH.
-    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    if (Test-Path $vswhere) {
-        $cmake = & $vswhere -latest -products * -find 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe' |
-            Select-Object -First 1
-    }
-}
-if (-not $cmake) {
-    throw "CMake not found. Install Visual Studio Build Tools with the 'Desktop development with C++' workload (it includes CMake)."
+    throw "CMake not found. Run scripts\setup.ps1, or install Visual Studio Build Tools with the 'Desktop development with C++' workload (it includes CMake)."
 }
 
 $build = Join-Path $RepoRoot 'build'

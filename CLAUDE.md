@@ -15,11 +15,13 @@ Script Hook RDR2 loads when the game starts.
 - `data/natives.json`: the native database (names, hashes, parameters, documentation).
 - `tools/native.py`: native lookup. `tools/gen_natives.py`: regenerates `natives.h`.
 - `scripts/*.ps1`: build, install into the game folder, read logs.
-- `sdk/`: the Script Hook RDR2 SDK, downloaded by the user. Not committed.
+- `sdk/`: the Script Hook RDR2 SDK, put there by `scripts/setup.ps1`. Not committed.
 
 ## Commands
 
 ```
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -CheckOnly   # what's installed / missing
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1     # install tools, Script Hook, SDK; build; deploy
 powershell -ExecutionPolicy Bypass -File scripts/build.ps1     # build all mods (Release)
 powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1    # copy .asi/.ini into the game folder
 powershell -ExecutionPolicy Bypass -File scripts/logs.ps1      # mod logs + ScriptHookRDR2.log
@@ -74,11 +76,16 @@ and replace the code. Use keys other mods don't (ExampleMod uses F9 and F10).
 
 ## Troubleshooting
 
-- `ScriptHookRDR2.lib not found`: the user hasn't extracted the SDK into `sdk/` (see README).
+Start with `scripts/setup.ps1 -CheckOnly`: it reports the build tools, game folder, Script Hook
+and SDK. Running `setup.ps1` without `-CheckOnly` installs software, so ask the user first.
+
+- `ScriptHookRDR2.lib not found`: the SDK isn't in `sdk/`. Run `scripts/setup.ps1`.
 - Unresolved external `__imp_?...@@...` for a Script Hook function: the declaration in
   `scripthook.h` doesn't match the SDK. Run `dumpbin /exports sdk\lib\ScriptHookRDR2.lib`
   and fix `scripthook.h` and `ci/ScriptHookRDR2.def` together.
 - The mod doesn't load at all: check `ScriptHookRDR2.log` in the game folder. After a game
   update Script Hook stops working until a new Script Hook version is released.
-- `deploy.ps1` can't find the game: write the game folder path into `game-dir.txt` at the
-  repo root (it's gitignored).
+- `deploy.ps1` can't find the game: run `scripts/setup.ps1 -GameDir "<folder with RDR2.exe>"`,
+  or write the path into `game-dir.txt` at the repo root (it's gitignored).
+- "Access denied" copying into the game folder: the game is under Program Files and needs
+  admin rights. Ask the user to run the script from PowerShell opened as administrator.

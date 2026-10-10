@@ -4,11 +4,13 @@
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/build.ps1 *)",
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 *)",
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/logs.ps1 *)",
+      "Bash(powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -CheckOnly)",
       "Bash(python tools/native.py *)",
       "Bash(python tools/gen_natives.py *)",
       "PowerShell(powershell -ExecutionPolicy Bypass -File scripts/build.ps1 *)",
       "PowerShell(powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 *)",
       "PowerShell(powershell -ExecutionPolicy Bypass -File scripts/logs.ps1 *)",
+      "PowerShell(powershell -ExecutionPolicy Bypass -File scripts/setup.ps1 -CheckOnly)",
       "PowerShell(python tools/native.py *)",
       "PowerShell(python tools/gen_natives.py *)"
     ]
