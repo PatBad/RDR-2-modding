@@ -8,11 +8,15 @@ Dead Eye cores.
 
 ## One-time setup (on the PC where RDR2 is installed)
 
-Install [Claude Code](https://claude.com/claude-code) for Windows, open it in a folder such as
-Documents, and ask:
+Install [Claude Code](https://claude.com/claude-code) for Windows, create a folder such as
+`C:\dev`, open Claude Code in it, and ask:
 
 > Install Git with winget, clone https://github.com/PatBad/RDR-2-modding, and run
 > scripts/setup.ps1 from the clone.
+
+Keep the repo out of folders synced by OneDrive (which includes Documents on many PCs),
+Dropbox or Google Drive, out of the RDR2 game folder, and out of Program Files. Building
+creates thousands of small files, which sync clients slow down or lock mid-build.
 
 Or do it yourself: install [Git](https://git-scm.com/download/win), clone this repo, and run
 this from the repo folder with the game closed:
